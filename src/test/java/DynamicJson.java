@@ -27,7 +27,7 @@ public class DynamicJson {
 	
 		
 	}
-		
+	//Parametrization	
 		@DataProvider(name ="Books")
 		
 		public Object[][] getData() {
