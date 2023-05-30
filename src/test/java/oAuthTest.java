@@ -1,5 +1,7 @@
 import static io.restassured.RestAssured.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -8,6 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.Assert;
 
 import Pojo.API;
 import Pojo.GetCourse;
@@ -19,6 +22,8 @@ public class oAuthTest {
 	
 	public static WebDriver driver;
 	public static void main(String[] args) throws InterruptedException {
+		
+		String [] courseTitles = {"Protractror","Selenium Webdriver Java","Cypress"};
 		
 		
 //		driver = new EdgeDriver();
@@ -63,11 +68,14 @@ public class oAuthTest {
 			System.out.println(apiCourses.get(i).getPrice());
 			}
 		}
-		
+		ArrayList <String> a = new ArrayList<String>();
 		List<WebAutomation> webAutomation = gc.getCourses().getWebAutomation();
 		for (int i =0;i<webAutomation.size();i++) {
-	System.out.println(webAutomation.get(i).getCourseTitle());		
+	a.add(webAutomation.get(i).getCourseTitle());		
 		}
+		List<String > expecte = Arrays.asList(courseTitles);
+		
+		Assert.assertEquals(a.equals(expecte), true);
 		
 	}
 
