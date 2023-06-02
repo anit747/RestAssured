@@ -5,9 +5,15 @@ import io.restassured.specification.RequestSpecification;
 import static io.restassured.RestAssured.*;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.testng.Assert;
 
 import Pojo.LoginRequest;
 import Pojo.LoginResponse;
+import Pojo.OrderDetail;
+import Pojo.Orders;
 
 
 public class EcommerceAPITest {
@@ -49,8 +55,41 @@ public class EcommerceAPITest {
 	 	
 	 	JsonPath js = new JsonPath (addProductResponse);
 	 	String productId = js.getString("productId");
-			
-			
+	 	
+	 	//Create Order
+	 	
+	 	
+		RequestSpecification createOrderBasereq = new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com").
+		setContentType(ContentType.JSON).addHeader("Authorization", token).build();
+		
+		OrderDetail orderDetail = new OrderDetail();
+		orderDetail.setCountry("India");
+		orderDetail.setProductOrderedId(productId);
+		
+		List<OrderDetail> orderDetailList = new ArrayList<OrderDetail>();
+		
+		orderDetailList.add(orderDetail);
+		Orders order = new Orders();
+		order.setOrders(orderDetailList);
+		
+
+		RequestSpecification createOrderreq = 	given().log().all().spec(createOrderBasereq).body(order);
+		
+	String responseOrder =	createOrderreq.when().post("/api/ecom/order/create-order").then().log().all().extract().response().asString();
+	
+	
+	
+	// Delete product 
+	
+	
+	RequestSpecification deleteOrderBasereq = new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com").addHeader("Authorization", token).build();
+	 
+	RequestSpecification deleteOrderReq	 = given().log().all().spec(deleteOrderBasereq).pathParam("productId",productId );
+String deleteProductResponse = 	deleteOrderReq.when().delete("/api/ecom/product/delete-product/{productId}").then().log().all().extract().response().asString();
+
+JsonPath js1 = new JsonPath (deleteProductResponse);
+Assert.assertEquals("Product Deleted Successfully", js1.get("message"));
+
 	}
 
 }
